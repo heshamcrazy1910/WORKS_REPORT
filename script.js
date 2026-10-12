@@ -125,3 +125,12 @@ $("saveSettings").onclick = () => { store("gemini_key", $("apiKey").value.trim()
 
 renderCommands();
 if(!store("gemini_key")) setStatus("ابدأ بإضافة مفتاح Gemini من الإعدادات.");
+
+/* الصفحة تفتح دايمًا من فوق */
+if("scrollRestoration" in history) history.scrollRestoration = "manual";
+if(location.hash){ history.replaceState(null, "", location.pathname + location.search); }
+window.scrollTo(0, 0);
+window.addEventListener("pageshow", () => window.scrollTo(0, 0));
+document.querySelectorAll('a[href="#tool"]').forEach(a => a.addEventListener("click", e => {
+  e.preventDefault(); $("tool").scrollIntoView({ behavior: "smooth", block: "start" });
+}));
