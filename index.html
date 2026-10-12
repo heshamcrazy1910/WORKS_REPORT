@@ -1,104 +1,80 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>مصيغ — صياغة بالعربي والإنجليزي</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap"
-    rel="stylesheet">
-  <link rel="icon" href="favicon.ico" sizes="any">
-  <link rel="icon" type="image/png" href="icons/icon-192.png">
-  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-  <link rel="manifest" href="manifest.webmanifest">
-  <meta name="theme-color" content="#070B14">
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>مصيغ — صياغة بالعربي والإنجليزي</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#070B14">
+<link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-  <nav class="nav">
-    <div class="nav-in">
-      <div class="brand"><span class="logo">م</span><b>مصيغ</b><i>MUSAYEGH</i></div>
-      <button class="gear" id="openSettings" type="button">الإعدادات</button>
+<nav class="nav">
+  <div class="nav-in">
+    <div class="brand"><span class="logo">م</span><b>مصيغ</b><i>MUSAYEGH</i></div>
+    <button class="gear" id="openSettings" type="button">الإعدادات</button>
+  </div>
+</nav>
+
+<main class="wrap">
+  <section class="hero">
+    <div class="hero-text">
+      <h1>اكتب الجملة<br>واستلمها مصاغة<br><span class="grad">بالعربي والإنجليزي</span></h1>
+      <p class="lead">اكتب بالعامية أو الفصحى أو الإنجليزي، واختار الأمر: صياغة رسمية، مختصرة، ودية، أو تصحيح لغوي. النتيجة بتطلع فصحى وإنجليزي مهني جاهزين للنسخ.</p>
     </div>
-  </nav>
+  </section>
 
-  <main class="wrap">
-    <section class="hero">
-      <div class="hero-text">
-        <span class="badge">⚡ أوامر الصياغة جاهزة</span>
-        <h1>اكتب الجملة<br>واستلمها مصاغة<br><span class="grad">بالعربي والإنجليزي</span></h1>
-        <p class="lead">اكتب بالعامية أو الفصحى أو الإنجليزي، واختار الأمر : صياغة رسمية، مختصرة، ودية ، أو تصحيح لغوي
-          النتيجة بتطلع فصحى وإنجليزي مهني جاهزين للنسخ</p>
-        <a class="btn-pill" href="#tool">ابدأ الصياغة</a>
+  <section class="panel" id="tool">
+    <div class="panel-head">
+      <span class="panel-ic">م</span>
+      <div>
+        <h2>اختار الأمر واكتب جملتك</h2>
+        <p class="cmd-desc" id="cmdDesc"></p>
       </div>
-
-      <div class="hero-visual" aria-hidden="true">
-        <div class="orbit">
-          <div class="ring"><i class="dot d1"></i><i class="dot d2"></i></div>
-          <div class="demo">
-            <div class="demo-h"><span>مثال</span><b class="demo-logo">م</b></div>
-            <div class="demo-box">
-              <p class="demo-ar">المتابعة في أعمال تركيبات البورسلين الخاصة بالتراس الخارجي</p>
-              <p class="demo-en" dir="ltr">Following up on the porcelain tile installation works for the external
-                terrace</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="panel" id="tool">
-      <div class="panel-head">
-        <span class="panel-ic">م</span>
-        <div>
-          <h2>اختار الأمر واكتب جملتك</h2>
-          <p class="cmd-desc" id="cmdDesc"></p>
-        </div>
-      </div>
-
-      <div class="cmds" id="cmds" role="group" aria-label="الأمر"></div>
-
-      <textarea id="input" placeholder="اكتب الجملة هنا، بالعامية أو بالفصحى أو بالإنجليزي…"></textarea>
-      <div class="row">
-        <button class="go" id="run" type="button">نفّذ</button>
-        <span class="hint">Ctrl + Enter للتنفيذ السريع</span>
-      </div>
-      <div class="status" id="status" role="status" aria-live="polite"></div>
-    </section>
-
-    <section class="out">
-      <section class="card" id="cardAr" hidden>
-        <div class="card-h"><span>العربية</span><button class="copy" data-target="outAr" type="button">نسخ</button>
-        </div>
-        <div class="card-b" id="outAr" dir="rtl" lang="ar"></div>
-      </section>
-      <section class="card en" id="cardEn" hidden>
-        <div class="card-h"><span>English</span><button class="copy" data-target="outEn" type="button">نسخ</button>
-        </div>
-        <div class="card-b" id="outEn" dir="ltr" lang="en"></div>
-      </section>
-    </section>
-  </main>
-
-  <dialog id="settings">
-    <h2>إعدادات Gemini</h2>
-    <label for="apiKey">مفتاح API</label>
-    <input id="apiKey" type="password" autocomplete="off" placeholder="AIza…">
-    <p>المفتاح بيتخزن في متصفحك بس تقدر تجيبه من <a href="https://aistudio.google.com/apikey" target="_blank"
-        rel="noopener">Google AI Studio</a>.</p>
-    <label for="model">الموديل</label>
-    <input id="model" type="text" autocomplete="off">
-    <div class="dlg-actions">
-      <button class="go" id="saveSettings" type="button">حفظ</button>
-      <button class="ghost" id="closeSettings" type="button">إلغاء</button>
     </div>
-  </dialog>
 
-  <script src="script.js"></script>
+    <div class="cmds" id="cmds" role="group" aria-label="الأمر"></div>
+
+    <textarea id="input" placeholder="اكتب الجملة هنا، بالعامية أو بالفصحى أو بالإنجليزي…"></textarea>
+    <div class="row">
+      <button class="go" id="run" type="button">نفّذ</button>
+      <span class="hint">Ctrl + Enter للتنفيذ السريع</span>
+    </div>
+    <div class="status" id="status" role="status" aria-live="polite"></div>
+  </section>
+
+  <section class="out">
+    <section class="card" id="cardAr" hidden>
+      <div class="card-h"><span>العربية</span><button class="copy" data-target="outAr" type="button">نسخ</button></div>
+      <div class="card-b" id="outAr" dir="rtl" lang="ar"></div>
+    </section>
+    <section class="card en" id="cardEn" hidden>
+      <div class="card-h"><span>English</span><button class="copy" data-target="outEn" type="button">نسخ</button></div>
+      <div class="card-b" id="outEn" dir="ltr" lang="en"></div>
+    </section>
+  </section>
+</main>
+
+<dialog id="settings">
+  <h2>إعدادات Gemini</h2>
+  <label for="apiKey">مفتاح API</label>
+  <input id="apiKey" type="password" autocomplete="off" placeholder="AIza…">
+  <p>المفتاح بيتخزن في متصفحك بس. تقدر تجيبه من <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a>.</p>
+  <label for="model">الموديل</label>
+  <input id="model" type="text" autocomplete="off">
+  <div class="dlg-actions">
+    <button class="go" id="saveSettings" type="button">حفظ</button>
+    <button class="ghost" id="closeSettings" type="button">إلغاء</button>
+  </div>
+</dialog>
+
+<script src="script.js"></script>
 </body>
-
 </html>
