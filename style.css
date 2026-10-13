@@ -75,7 +75,8 @@ textarea:focus{border-color:var(--cyan)}
 .social .wa:hover{color:#25D366;border-color:#25D366;box-shadow:0 0 18px rgba(37,211,102,.35)}
 .social .fb:hover{color:#4C8DFF;border-color:#4C8DFF;box-shadow:0 0 18px rgba(76,141,255,.35)}
 .social .ig:hover{color:#FF5FA2;border-color:#FF5FA2;box-shadow:0 0 18px rgba(255,95,162,.35)}
-.copy-r{margin:0;color:var(--muted);font-size:.85rem}
+.copy-r{margin:0;color:var(--muted);font-size:.9rem}
+.copy-r b{color:#fff;font-weight:800}
 
 /* نافذة الإعدادات */
 dialog{border:1px solid var(--line2);border-radius:18px;padding:22px;max-width:460px;width:calc(100% - 32px);font-family:inherit;color:var(--ink);background:#0D1527}
