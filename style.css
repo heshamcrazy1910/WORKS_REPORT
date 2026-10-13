@@ -6,7 +6,7 @@
 *{box-sizing:border-box}
 html,body{margin:0}
 body{
-  font-family:"Cairo",Tahoma,sans-serif;color:var(--ink);line-height:1.7;min-height:100vh;
+  font-family:"Cairo",Tahoma,sans-serif;color:var(--ink);line-height:1.7;min-height:100vh;display:flex;flex-direction:column;
   background:
     radial-gradient(520px 420px at 8% 22%,rgba(139,92,246,.22),transparent 70%),
     radial-gradient(520px 420px at 94% 12%,rgba(0,194,255,.14),transparent 70%),
@@ -24,7 +24,7 @@ button:focus-visible,textarea:focus-visible,input:focus-visible,a:focus-visible{
 .gear{font:inherit;font-weight:600;font-size:.88rem;color:var(--ink);background:var(--bg2);border:1px solid var(--line2);border-radius:999px;padding:6px 16px;cursor:pointer}
 .gear:hover{border-color:var(--cyan)}
 
-.wrap{max-width:920px;margin:0 auto;padding:0 18px 70px}
+.wrap{width:100%;max-width:920px;margin:0 auto;padding:0 18px 50px;flex:1}
 
 /* الواجهة الرئيسية */
 .hero{padding:54px 0 46px;text-align:center}
@@ -66,6 +66,16 @@ textarea:focus{border-color:var(--cyan)}
 .copy.done{background:var(--grad);border-color:transparent;color:#fff}
 .card-b{padding:16px 18px;font-size:1.1rem;white-space:pre-wrap}
 .card.en .card-b{font-size:1.08rem;line-height:1.65}
+
+/* الشريط السفلي */
+.footer{border-top:1px solid var(--line);background:rgba(7,11,20,.85);padding:22px 18px 26px;text-align:center}
+.social{display:flex;justify-content:center;gap:12px;margin-bottom:12px}
+.social a{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;color:var(--ink);background:var(--bg2);border:1px solid var(--line2);transition:border-color .2s,color .2s,box-shadow .2s}
+.social a:hover{color:#fff;border-color:var(--cyan);box-shadow:0 0 18px rgba(0,194,255,.35)}
+.social .wa:hover{color:#25D366;border-color:#25D366;box-shadow:0 0 18px rgba(37,211,102,.35)}
+.social .fb:hover{color:#4C8DFF;border-color:#4C8DFF;box-shadow:0 0 18px rgba(76,141,255,.35)}
+.social .ig:hover{color:#FF5FA2;border-color:#FF5FA2;box-shadow:0 0 18px rgba(255,95,162,.35)}
+.copy-r{margin:0;color:var(--muted);font-size:.85rem}
 
 /* نافذة الإعدادات */
 dialog{border:1px solid var(--line2);border-radius:18px;padding:22px;max-width:460px;width:calc(100% - 32px);font-family:inherit;color:var(--ink);background:#0D1527}
