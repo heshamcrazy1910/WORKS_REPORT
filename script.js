@@ -133,3 +133,16 @@ window.scrollTo(0, 0);
 window.addEventListener("pageshow", () => window.scrollTo(0, 0));
 
 $("year").textContent = new Date().getFullYear();
+
+function renderCommands(){
+  const box = $("cmds"); box.innerHTML = "";
+  Object.entries(COMMANDS).forEach(([key, c]) => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "cmd"; b.textContent = c.label;
+    b.dataset.key = key;                          // ← السطر الجديد
+    b.setAttribute("aria-pressed", key === current);
+    b.onclick = () => { current = key; renderCommands(); };
+    box.appendChild(b);
+  });
+  $("cmdDesc").textContent = COMMANDS[current].desc;
+}
