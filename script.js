@@ -37,6 +37,7 @@ function renderCommands(){
   Object.entries(COMMANDS).forEach(([key, c]) => {
     const b = document.createElement("button");
     b.type = "button"; b.className = "cmd"; b.textContent = c.label;
+    b.dataset.key = key;
     b.setAttribute("aria-pressed", key === current);
     b.onclick = () => { current = key; renderCommands(); };
     box.appendChild(b);
@@ -134,15 +135,164 @@ window.addEventListener("pageshow", () => window.scrollTo(0, 0));
 
 $("year").textContent = new Date().getFullYear();
 
-function renderCommands(){
-  const box = $("cmds"); box.innerHTML = "";
-  Object.entries(COMMANDS).forEach(([key, c]) => {
-    const b = document.createElement("button");
-    b.type = "button"; b.className = "cmd"; b.textContent = c.label;
-    b.dataset.key = key;                          // ← السطر الجديد
-    b.setAttribute("aria-pressed", key === current);
-    b.onclick = () => { current = key; renderCommands(); };
-    box.appendChild(b);
-  });
-  $("cmdDesc").textContent = COMMANDS[current].desc;
+/* ============================================================
+   ميزة صورة + تعليق
+   ============================================================ */
+let imgFile = null;
+
+const $imgInput    = $("imgInput");
+const $dropImg     = $("dropImg");
+const $previewWrap = $("imgPreviewWrap");
+const $preview     = $("imgPreview");
+const $removeImg   = $("removeImg");
+const $comment     = $("imgComment");
+const $runImg      = $("runImg");
+const $statusImg   = $("statusImg");
+const $cardImgOut  = $("cardImgOut");
+const $imgOut      = $("imgOut");
+
+function setImgStatus(msg, isErr){
+  $statusImg.textContent = msg || "";
+  $statusImg.className = "status" + (isErr ? " err" : "");
 }
+
+function showImage(file){
+  if(!file || !file.type.startsWith("image/")) return;
+  imgFile = file;
+  $preview.src = URL.createObjectURL(file);
+  $previewWrap.hidden = false;
+  $dropImg.hidden = true;
+  setImgStatus("");
+}
+
+$dropImg.onclick = () => $imgInput.click();
+$imgInput.onchange = e => { if(e.target.files[0]) showImage(e.target.files[0]); $imgInput.value = ""; };
+$dropImg.ondragover = e => { e.preventDefault(); $dropImg.classList.add("over"); };
+$dropImg.ondragleave = () => $dropImg.classList.remove("over");
+$dropImg.ondrop = e => {
+  e.preventDefault();
+  $dropImg.classList.remove("over");
+  if(e.dataTransfer.files[0]) showImage(e.dataTransfer.files[0]);
+};
+
+$removeImg.onclick = () => {
+  imgFile = null;
+  $preview.src = "";
+  $previewWrap.hidden = true;
+  $dropImg.hidden = false;
+  setImgStatus("");
+};
+
+// الاقتراحات السريعة تملأ التعليق
+document.querySelectorAll(".suggestion").forEach(b => {
+  b.onclick = () => {
+    $comment.value = b.dataset.text;
+    $comment.focus();
+    $comment.scrollIntoView({ behavior: "smooth", block: "center" });
+  };
+});
+
+function imgToBase64(file){
+  return new Promise((res, rej) => {
+    const im = new Image();
+    im.onload = () => {
+      const k = Math.min(1, 1800 / Math.max(im.naturalWidth, im.naturalHeight));
+      const c = document.createElement("canvas");
+      c.width  = im.naturalWidth  * k;
+      c.height = im.naturalHeight * k;
+      const x = c.getContext("2d");
+      x.fillStyle = "#fff";
+      x.fillRect(0, 0, c.width, c.height);
+      x.drawImage(im, 0, 0, c.width, c.height);
+      res(c.toDataURL("image/jpeg", 0.9).split(",")[1]);
+    };
+    im.onerror = rej;
+    im.src = URL.createObjectURL(file);
+  });
+}
+
+$runImg.onclick = async () => {
+  const comment = $comment.value.trim();
+  const key = store("gemini_key");
+
+  if(!imgFile){ setImgStatus("ارفع صورة الأول.", true); return; }
+  if(!comment){ setImgStatus("اكتب تعليقك — عايز Gemini يعمل إيه في الصورة؟", true); $comment.focus(); return; }
+  if(!key){ setImgStatus("ضيف مفتاح Gemini من الإعدادات الأول.", true); $("settings").showModal(); return; }
+
+  $runImg.disabled = true;
+  setImgStatus("جاري تحليل الصورة…");
+  $cardImgOut.hidden = true;
+
+  try{
+    const base64 = await imgToBase64(imgFile);
+    const model = getModel();
+    const urlFor = m => "https://generativelanguage.googleapis.com/v1beta/models/" + encodeURIComponent(m) + ":generateContent";
+
+    const system =
+      "أنت مساعد ذكي بيحلل الصور وينفّذ تعليمات المستخدم بدقة. " +
+      "المستخدم هيرفع صورة وهيوصف في التعليق عايز تعمل إيه — ممكن يطلب استخراج نص، وصف، ترجمة، قراءة جدول، تحليل، أو أي مهمة تانية. " +
+      "حلّل الصورة بعناية، والتزم بتعليمات المستخدم بالحرف، " +
+      "وردّ بلغة المستخدم (عربي أو إنجليزي) وبنفس أسلوبه. " +
+      "لو النتيجة فيها نص مستخرج، سيبيه زي ما هو. لو جدول، حافظ على تنظيمه. " +
+      "متضيفش أي مقدمات أو خواتيم — قدّم النتيجة مباشرة.";
+
+    const body = JSON.stringify({
+      systemInstruction: { parts: [{ text: system }] },
+      contents: [{
+        role: "user",
+        parts: [
+          { inline_data: { mime_type: "image/jpeg", data: base64 } },
+          { text: comment }
+        ]
+      }]
+    });
+
+    let res, data, busy = false;
+    const MAX_TRIES = 4;
+    for(let attempt = 1; attempt <= MAX_TRIES; attempt++){
+      const useModel = (attempt > 1 && model !== MODEL_FALLBACK) ? MODEL_FALLBACK : model;
+      res = await fetch(urlFor(useModel), {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-goog-api-key": key },
+        body
+      });
+      data = await res.json().catch(() => ({}));
+      if(res.ok) break;
+      busy = (res.status === 503 || res.status === 429);
+      if(!busy || attempt === MAX_TRIES) break;
+      setImgStatus("الموديل مشغول، بجرب موديل بديل…");
+      await new Promise(r => setTimeout(r, 1000));
+    }
+
+    if(!res.ok){
+      const m = (data && data.error && data.error.message) || ("HTTP " + res.status);
+      const err = new Error(m); err.busy = busy; throw err;
+    }
+
+    const text = (data.candidates?.[0]?.content?.parts || [])
+      .map(p => p.text || "").join("").trim();
+
+    if(!text) throw new Error("Gemini رجّع رد فاضي. جرّب تاني.");
+
+    $imgOut.textContent = text;
+    $cardImgOut.hidden = false;
+    setImgStatus("تم ✓");
+
+    // زر نسخ بطاقة الصورة — نفس الآلية
+    const imgCopyBtn = $cardImgOut.querySelector(".copy");
+    if(imgCopyBtn && !imgCopyBtn.dataset.bound){
+      imgCopyBtn.dataset.bound = "1";
+      imgCopyBtn.onclick = async () => {
+        try{ await navigator.clipboard.writeText($imgOut.textContent); }
+        catch(e){ const r = document.createRange(); r.selectNodeContents($imgOut); const s = getSelection(); s.removeAllRanges(); s.addRange(r); document.execCommand("copy"); }
+        imgCopyBtn.textContent = "تم النسخ"; imgCopyBtn.classList.add("done");
+        setTimeout(() => { imgCopyBtn.textContent = "نسخ"; imgCopyBtn.classList.remove("done"); }, 1400);
+      };
+    }
+  }catch(e){
+    if(e.busy) setImgStatus("الموديل لسه مشغول. استنى دقيقة وجرّب تاني.", true);
+    else setImgStatus("حصلت مشكلة: " + e.message, true);
+  }finally{
+    $runImg.disabled = false;
+  }
+};

@@ -60,6 +60,49 @@
       <div class="card-b" id="outEn" dir="ltr" lang="en"></div>
     </section>
   </section>
+
+  <!-- ===== فاصل ===== -->
+  <div class="divider"><span>أو جرّب على صورة</span></div>
+
+  <!-- ===== صورة + تعليق ===== -->
+  <section class="panel" id="imgTool">
+    <div class="panel-head">
+      <span class="panel-ic">ص</span>
+      <div>
+        <h2>صورة + تعليق</h2>
+        <p class="cmd-desc">ارفع صورة، اكتب اللي عايز Gemini يعمله فيها، وشوف النتيجة.</p>
+      </div>
+    </div>
+
+    <div class="drop" id="dropImg">اسحب صورة هنا أو اضغط للاختيار (JPG, PNG, WebP)</div>
+    <input type="file" id="imgInput" accept="image/*" hidden>
+
+    <div id="imgPreviewWrap" class="img-preview-wrap" hidden>
+      <img id="imgPreview" alt="">
+      <button id="removeImg" class="remove-img" type="button" aria-label="حذف الصورة">✕</button>
+    </div>
+
+    <div class="suggestions" id="imgSuggestions">
+      <button type="button" class="suggestion" data-text="استخرج كل النص الموجود في الصورة زي ما هو">📝 استخرج النص</button>
+      <button type="button" class="suggestion" data-text="اوصف الصورة بالتفصيل">👁️ اوصف الصورة</button>
+      <button type="button" class="suggestion" data-text="ترجم أي نص في الصورة للعربي">🌐 ترجم للعربي</button>
+      <button type="button" class="suggestion" data-text="اقرأ الجدول الموجود في الصورة وحوّله لصيغة منظمة">📊 اقرأ الجدول</button>
+    </div>
+
+    <textarea id="imgComment" placeholder="اكتب تعليقك أو اللي عايز Gemini يعمله في الصورة… مثال: استخرج النص من الصورة، أو اشرح اللي فيها، أو صحّح الجدول…"></textarea>
+
+    <div class="row">
+      <button class="go" id="runImg" type="button">نفّذ على الصورة</button>
+      <span class="hint">Gemini هيقرا الصورة ويلتزم بتعليقك</span>
+    </div>
+
+    <div class="status" id="statusImg" role="status" aria-live="polite"></div>
+
+    <section class="card" id="cardImgOut" hidden>
+      <div class="card-h"><span>النتيجة</span><button class="copy" data-target="imgOut" type="button">نسخ</button></div>
+      <div class="card-b" id="imgOut" dir="auto"></div>
+    </section>
+  </section>
 </main>
 
 <footer class="footer">
